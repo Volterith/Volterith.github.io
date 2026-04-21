@@ -2,721 +2,282 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Volterith | Инфо-сайт</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volterith | Windows Live Profile</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: system-ui, 'Segoe UI', 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+        :root {
+            --msn-blue: #004693;
+            --msn-light-blue: #0078d7;
+            --aero-bg: rgba(255, 255, 255, 0.88);
         }
 
-        /* Фон с размытием */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+
         body {
-            min-height: 100vh;
-            background: url('bg.jpg') no-repeat center center fixed;
+            background: #003366 url('bg.jpg') no-repeat center center fixed;
             background-size: cover;
+            min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: flex-start;
             padding: 20px;
-            position: relative;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
+        /* Окно Aero */
+        .window {
             width: 100%;
-            height: 100%;
-            backdrop-filter: blur(14px);
-            background: rgba(0, 0, 0, 0.25);
-            z-index: 0;
+            max-width: 940px;
+            background: var(--aero-bg);
+            backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 8px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        .card {
-            position: relative;
-            z-index: 2;
-            max-width: 960px;
-            width: 100%;
-            background: rgba(20, 20, 30, 0.7);
-            backdrop-filter: blur(16px);
-            border-radius: 56px;
-            padding: 36px 32px 44px 32px;
-            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
-            transition: transform 0.2s ease;
+        /* Шапка с новой бабочкой */
+        .window-header {
+            background: linear-gradient(to bottom, #0078d7, #005a9e);
+            padding: 12px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ffba00;
+            color: white;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
         }
 
-        .card:hover {
-            transform: scale(1.01);
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: bold; font-size: 15px; }
+        .logo img { width: 24px; height: 24px; object-fit: contain; }
+
+        /* Тело окна */
+        .window-body {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            padding: 25px;
+            gap: 25px;
         }
 
-        .profile-header {
+        /* Профиль слева */
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+
+        .profile-card {
+            background: white;
+            border: 1px solid #b8b8b8;
+            padding: 20px;
             text-align: center;
-            margin-bottom: 28px;
+            border-radius: 2px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .avatar {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 18px auto;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            background: #2c2c3a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 125px; height: 125px;
+            margin: 0 auto 15px;
+            border: 4px solid white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            position: relative;
+            background: #eee;
         }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-        .avatar:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
-            border-color: rgba(255, 220, 120, 0.8);
-        }
+        .name { color: var(--msn-blue); font-weight: bold; font-size: 20px; }
+        .sub-name { font-size: 11px; color: #777; margin-top: 5px; }
 
-        .avatar:active {
-            transform: scale(0.98);
-        }
-
-        .avatar img, .avatar video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .avatar-placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #3a3a55, #1e1e2c);
+        /* Гаджет-таймер */
+        .gadget {
+            background: linear-gradient(135deg, #444, #111);
             color: white;
-            font-size: 3rem;
-            font-weight: 600;
-        }
-
-        .avatar-hint {
-            position: absolute;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
-            color: #ffdfa5;
-            font-size: 0.7rem;
-            padding: 4px 10px;
-            border-radius: 20px;
-            white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .avatar:hover .avatar-hint {
-            opacity: 1;
-        }
-
-        .name {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: white;
-            letter-spacing: -0.5px;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            margin-bottom: 6px;
-        }
-
-        .tagline {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.75);
-            margin-bottom: 12px;
-            display: inline-block;
-            padding-bottom: 4px;
-            border-bottom: 1px dashed rgba(255,255,255,0.25);
-        }
-
-        .countdown-section {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 60px;
-            padding: 16px 12px;
-            margin: 20px 0 28px 0;
-            backdrop-filter: blur(4px);
-        }
-
-        .countdown-label {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 500;
-            color: #ffdfa5;
-            margin-bottom: 8px;
+            padding: 18px;
+            border-radius: 15px;
             text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: inset 0 0 15px rgba(255,255,255,0.1);
+        }
+        .timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 10px; }
+        .t-val { font-size: 18px; font-weight: bold; display: block; }
+        .t-lab { font-size: 8px; opacity: 0.7; text-transform: uppercase; }
+
+        /* Контент справа */
+        .content { display: flex; flex-direction: column; gap: 25px; }
+
+        .category-group { margin-bottom: 5px; }
+        .category-title {
+            font-size: 12px; font-weight: bold; color: #444;
+            text-transform: uppercase; border-bottom: 1px solid #ccc;
+            padding-bottom: 6px; margin-bottom: 12px;
+            letter-spacing: 0.5px;
         }
 
-        .timer {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            row-gap: 12px;
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
         }
 
-        .time-block {
-            background: rgba(0, 0, 0, 0.55);
-            border-radius: 28px;
-            padding: 8px 14px;
-            min-width: 70px;
-            backdrop-filter: blur(2px);
-            border: 1px solid rgba(255,255,240,0.2);
-        }
-
-        .time-number {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #fff3cf;
-            line-height: 1;
-            letter-spacing: 2px;
-        }
-
-        .time-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            color: #ccc9b6;
-            font-weight: 500;
-        }
-
-        .bio-section {
-            margin: 20px 0 28px 0;
-        }
-
-        .bio-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: rgba(255, 255, 245, 0.9);
-            margin-bottom: 12px;
-            letter-spacing: -0.2px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            justify-content: center;
-        }
-
-        .bio-text {
-            background: rgba(10, 10, 18, 0.55);
-            border-radius: 32px;
-            padding: 16px 24px;
-            color: #f0f0f0;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            text-align: center;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,200,0.15);
-        }
-
-        /* ДВЕ КОЛОНКИ */
-        .links-double {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 28px;
-            margin: 20px 0 20px 0;
-            align-items: stretch;
-        }
-
-        .links-column {
-            flex: 1;
-            min-width: 240px;
-            background: rgba(0, 0, 0, 0.25);
-            border-radius: 40px;
-            padding: 18px 16px;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,210,0.1);
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
-        }
-
-        .column-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 20px;
-            color: #ffe2b5;
-            letter-spacing: -0.3px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .column-title span {
-            font-size: 1.3rem;
-        }
-
-        .link-group {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            flex: 1;
-        }
-
-        /* ДИНАМИЧЕСКИЙ РАЗМЕР КНОПОК — если ссылок мало, они растягиваются */
-        .link-group:has(> :only-child) .social-link {
-            flex: 1;
-            justify-content: center;
-            padding: 16px 24px;
-            font-size: 1.1rem;
-        }
-        
-        /* Если 2 ссылки */
-        .link-group:has(> :nth-child(2):last-child) .social-link {
-            flex: 1;
-            justify-content: center;
-            padding: 14px 22px;
-            font-size: 1.05rem;
-        }
-        
-        /* Если 3 ссылки — чуть увеличиваем */
-        .link-group:has(> :nth-child(3):last-child) .social-link {
-            padding: 12px 20px;
-        }
-        
-        /* Общий стиль для ссылок с flex-растяжением */
-        .link-group .social-link {
-            transition: all 0.3s ease;
-        }
-        
-        /* Альтернативный подход через JS — более гибкий */
-        .link-group.expanded-links .social-link {
-            flex: 1;
-            justify-content: center;
-            padding: 16px 20px;
-            font-size: 1.05rem;
-        }
-
-        .social-link {
+        /* Кнопки ссылок */
+        .link-card {
             display: flex;
             align-items: center;
             gap: 12px;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
-            padding: 10px 18px;
-            border-radius: 60px;
+            padding: 10px;
+            background: linear-gradient(to bottom, #ffffff, #f2f2f2);
+            border: 1px solid #bbb;
+            border-radius: 3px;
             text-decoration: none;
-            color: white;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #333;
+            transition: all 0.2s;
         }
-
-        .social-link:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateX(5px) scale(1.02);
-            border-color: rgba(255, 220, 120, 0.8);
-            box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+        .link-card:hover {
+            border-color: #ffba00;
+            background: #fff;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
         }
-
-        .link-icon {
-            font-size: 1.3rem;
+        .link-card img {
             width: 32px;
-            text-align: center;
+            height: 32px;
+            object-fit: cover;
+            border-radius: 2px;
+            border: 1px solid #ddd;
         }
+        .link-info b { display: block; font-size: 13px; color: var(--msn-blue); }
+        .link-info small { font-size: 11px; color: #666; }
 
-        @media (max-width: 700px) {
-            .card {
-                padding: 24px 20px 32px 20px;
-            }
-            .links-double {
-                flex-direction: column;
-                gap: 20px;
-            }
-            .links-column {
-                width: 100%;
-                min-width: unset;
-            }
-            .social-link:hover {
-                transform: translateX(0px) scale(1.02);
-            }
-            .time-number {
-                font-size: 1.5rem;
-            }
-            .time-block {
-                min-width: 58px;
-                padding: 6px 10px;
-            }
-            .avatar-hint {
-                display: none;
-            }
+        /* Мобильная адаптация */
+        @media (max-width: 800px) {
+            .window-body { grid-template-columns: 1fr; padding: 15px; }
+            .sidebar { order: 1; }
+            .content { order: 2; }
+            .avatar { width: 100px; height: 100px; }
+            .links-grid { grid-template-columns: 1fr; }
+            .window { border-radius: 0; border: none; }
+            body { padding: 0; }
         }
 
         footer {
-            font-size: 0.7rem;
-            color: rgba(255,255,220,0.5);
-            margin-top: 32px;
-            text-align: center;
-            border-top: 1px solid rgba(255,255,200,0.1);
-            padding-top: 20px;
-        }
-
-        .code-hint {
-            background: rgba(0,0,0,0.3);
-            border-radius: 16px;
-            padding: 8px 12px;
-            margin-top: 18px;
-            font-size: 0.7rem;
-            color: #bcb8a8;
-            text-align: center;
-        }
-        .code-hint span {
-            color: #ffd966;
-            font-weight: 500;
-        }
-        
-        .links-column {
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            padding: 12px; background: rgba(0,0,0,0.05);
+            text-align: center; font-size: 11px; color: #555;
+            border-top: 1px solid #ccc;
         }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <div class="profile-header">
-        <div class="avatar" id="avatarContainer">
-            <img src="avatar.jpg" alt="Volterith avatar" id="avatarImg" onerror="handleAvatarError()">
-            <div class="avatar-hint">✨ patpat ✨</div>
+<div class="window">
+    <header class="window-header">
+        <div class="logo">
+            <img src="https://icons.iconseeker.com/png/fullsize/msn-buddy/msn-butterfly.png" alt="butterfly">
+            Windows Live MSN
         </div>
-        <div class="name">Volterith</div>
-        <div class="tagline">✦ пишу, но не только код ✦</div>
+        <div style="font-size: 11px; opacity: 0.9;">Volterith • Online</div>
+    </header>
+
+    <div class="window-body">
+        <aside class="sidebar">
+            <div class="profile-card">
+                <div class="avatar" id="avatarContainer">
+                    <img src="avatar.jpg" id="avatarImg" alt="Volterith" onerror="this.src='https://via.placeholder.com/125'">
+                </div>
+                <div class="name">Volterith</div>
+                <p class="sub-name">«пишу, но не только код»</p>
+            </div>
+
+            <div class="gadget">
+                <div style="font-size: 10px; font-weight: bold; letter-spacing: 1px;">BIRTHDAY</div>
+                <div class="timer-grid">
+                    <div><span class="t-val" id="days">00</span><span class="t-lab">дн</span></div>
+                    <div><span class="t-val" id="hours">00</span><span class="t-lab">ч</span></div>
+                    <div><span class="t-val" id="minutes">00</span><span class="t-lab">м</span></div>
+                    <div><span class="t-val" id="seconds">00</span><span class="t-lab">с</span></div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content" id="main-content">
+            <!-- Ссылки генерируются скриптом ниже -->
+        </main>
     </div>
 
-    <div class="countdown-section">
-        <div class="countdown-label">🎂 ДО ДНЯ РОЖДЕНИЯ ОСТАЛОСЬ 🎂</div>
-        <div class="timer" id="countdownTimer">
-            <div class="time-block"><span class="time-number" id="days">00</span><div class="time-label">дней</div></div>
-            <div class="time-block"><span class="time-number" id="hours">00</span><div class="time-label">часов</div></div>
-            <div class="time-block"><span class="time-number" id="minutes">00</span><div class="time-label">минут</div></div>
-            <div class="time-block"><span class="time-number" id="seconds">00</span><div class="time-label">секунд</div></div>
-        </div>
-    </div>
-
-    <div class="bio-section">
-        <div class="bio-title">📝 немного обо мне</div>
-        <div class="bio-text" id="bioText">
-            Техно-фрик, ретро-геймер, любитель тяжелой музыки.
-        </div>
-    </div>
-
-    <!-- ДВЕ КОЛОНКИ -->
-    <div class="links-double" id="linksDouble">
-        <!-- ЛЕВАЯ КОЛОНКА: Социальные сети -->
-        <div class="links-column" id="socialColumn">
-            <div class="column-title">
-                <span>🌐</span> Социальные сети
-            </div>
-            <div class="link-group" id="socialLinksGroup">
-                <a href="https://t.me/volterith_shelter" target="_blank" class="social-link">
-                    <span class="link-icon">🦉</span> Моя сычевальня
-                </a>
-                <a href="https://t.me/+8CM3kqXfBHoxM2Zi" target="_blank" class="social-link">
-                    <span class="link-icon">🗑️</span> Щитпостник
-                </a>
-                <a href="https://discord.gg/NehPEUyF9s" target="_blank" class="social-link">
-                    <span class="link-icon">🎭</span> Enderverse RP
-                </a>
-                <a href="https://github.com/volterith" target="_blank" class="social-link">
-                    <span class="link-icon">🎸</span> GitHub
-                </a>
-            </div>
-        </div>
-
-        <!-- ПРАВАЯ КОЛОНКА: Проекты -->
-        <div class="links-column" id="projectsColumn">
-            <div class="column-title">
-                <span>🚀</span> Мои проекты
-            </div>
-            <div class="link-group" id="projectsLinksGroup">
-                <a href="https://t.me/utlc_community" target="_blank" class="social-link">
-                    <span class="link-icon">💔</span> Team Leaked (co-owner)
-                </a>
-                <a href="https://t.me/charchive78" target="_blank" class="social-link">
-                    <span class="link-icon">🔮</span> Chaos Archive
-                </a>
-            </div>
-        </div>
-    </div>
-    
-    <footer>© Volterith • всегда в движении ✨</footer>
+    <footer>© 2008 Microsoft Corporation. Все права защищены.</footer>
 </div>
 
 <script>
-    // ---------- НАСТРОЙКИ ФАЙЛОВ ----------
-    const AVATAR_IMG = 'avatar.jpg';
-    const GIF_FILE = 'patpat.gif';
+    // --- ВАШ СПИСОК ССЫЛОК ---
+    const myLinks = [
+        { category: "channels", title: "Душенька вещает", desc: "Telegram канал", url: "https://t.me/volterith_shelter", icon: "tg.jpg" },
+        { category: "channels", title: "[щп] молчаливые архивы в которых не молчат", desc: "Вторичный архив", url: "https://t.me/+8CM3kqXfBHoxM2Zi", icon: "sp.jpg" },
+        
+        { category: "social", title: "GitHub", desc: "Мой код и проекты", url: "https://github.com/volterith", icon: "github.png" },
+        { category: "social", title: "Enderverse RP", desc: "Discord сервер", url: "https://discord.gg/NehPEUyF9s", icon: "ev.webp" },
+        
+        { category: "projects", title: "Team Leaked", desc: "Co-owner", url: "https://t.me/utlc_community", icon: "tl.jpg" },
+        { category: "projects", title: "Chaos Archive", desc: "Лор Enderverse", url: "https://t.me/charchive78", icon: "ca.jpg" }
+    ];
+
+    const categories = {
+        channels: "Telegram-каналы",
+        social: "Социальные сети",
+        projects: "Мои проекты"
+    };
+
+    // Отрисовка контента
+    const contentDiv = document.getElementById('main-content');
     
-    // ---------- ДИНАМИЧЕСКОЕ МАСШТАБИРОВАНИЕ КНОПОК ----------
-    function adjustLinkSizes() {
-        const socialGroup = document.getElementById('socialLinksGroup');
-        const projectsGroup = document.getElementById('projectsLinksGroup');
-        
-        function adjustGroup(group) {
-            if (!group) return;
-            const links = group.querySelectorAll('.social-link');
-            const count = links.length;
+    Object.keys(categories).forEach(key => {
+        const sectionLinks = myLinks.filter(l => l.category === key);
+        if (sectionLinks.length > 0) {
+            const group = document.createElement('div');
+            group.className = 'category-group';
+            group.innerHTML = `<div class="category-title">${categories[key]}</div>`;
             
-            // Убираем предыдущие классы
-            group.classList.remove('expanded-links', 'few-links', 'very-few');
+            const grid = document.createElement('div');
+            grid.className = 'links-grid';
             
-            if (count <= 2) {
-                group.classList.add('expanded-links');
-                // Добавляем стиль для каждого элемента
-                links.forEach(link => {
-                    link.style.flex = '1';
-                    link.style.justifyContent = 'center';
-                    if (count === 1) {
-                        link.style.padding = '18px 24px';
-                        link.style.fontSize = '1.1rem';
-                    } else if (count === 2) {
-                        link.style.padding = '14px 22px';
-                        link.style.fontSize = '1.05rem';
-                    }
-                });
-            } else if (count === 3) {
-                links.forEach(link => {
-                    link.style.flex = '';
-                    link.style.justifyContent = '';
-                    link.style.padding = '12px 20px';
-                    link.style.fontSize = '0.98rem';
-                });
-            } else {
-                links.forEach(link => {
-                    link.style.flex = '';
-                    link.style.justifyContent = '';
-                    link.style.padding = '';
-                    link.style.fontSize = '';
-                });
-            }
-        }
-        
-        adjustGroup(socialGroup);
-        adjustGroup(projectsGroup);
-    }
-    
-    // ---------- АВАТАРКА С ГИФКОЙ ----------
-    const avatarContainer = document.getElementById('avatarContainer');
-    let originalContent = null;
-    let isPlayingGif = false;
-    let gifVideo = null;
-    
-    function playGifOnAvatar() {
-        if (isPlayingGif) return;
-        
-        isPlayingGif = true;
-        originalContent = avatarContainer.innerHTML;
-        const fileExt = GIF_FILE.split('.').pop().toLowerCase();
-        
-        if (fileExt === 'gif') {
-            const gifImg = document.createElement('img');
-            gifImg.src = GIF_FILE;
-            gifImg.style.width = '100%';
-            gifImg.style.height = '100%';
-            gifImg.style.objectFit = 'cover';
-            gifImg.style.borderRadius = '50%';
-            gifImg.alt = 'patpat animation';
-            
-            avatarContainer.innerHTML = '';
-            avatarContainer.appendChild(gifImg);
-            
-            const hint = avatarContainer.querySelector('.avatar-hint');
-            if (hint) hint.style.display = 'none';
-            
-            gifVideo = gifImg;
-            const gifDuration = 2000;
-            
-            const restoreTimeout = setTimeout(() => {
-                if (isPlayingGif) restoreAvatar();
-            }, gifDuration);
-            
-            gifImg.restoreTimeout = restoreTimeout;
-            gifImg.onerror = function() {
-                console.warn('Гифка ' + GIF_FILE + ' не загрузилась, возвращаем аватар');
-                clearTimeout(gifImg.restoreTimeout);
-                restoreAvatar();
-            };
-        } else {
-            const video = document.createElement('video');
-            video.src = GIF_FILE;
-            video.style.width = '100%';
-            video.style.height = '100%';
-            video.style.objectFit = 'cover';
-            video.style.borderRadius = '50%';
-            video.autoplay = true;
-            video.muted = true;
-            video.playsInline = true;
-            video.loop = false;
-            
-            avatarContainer.innerHTML = '';
-            avatarContainer.appendChild(video);
-            
-            const hint = avatarContainer.querySelector('.avatar-hint');
-            if (hint) hint.style.display = 'none';
-            
-            gifVideo = video;
-            
-            video.addEventListener('ended', function onEnded() {
-                restoreAvatar();
-                video.removeEventListener('ended', onEnded);
+            sectionLinks.forEach(link => {
+                grid.innerHTML += `
+                    <a href="${link.url}" target="_blank" class="link-card">
+                        <img src="${link.icon}" onerror="this.src='https://icons.iconseeker.com/png/fullsize/msn-buddy/msn-butterfly.png'">
+                        <div class="link-info">
+                            <b>${link.title}</b>
+                            <small>${link.desc}</small>
+                        </div>
+                    </a>
+                `;
             });
-            
-            video.addEventListener('error', function() {
-                console.warn('Видео ' + GIF_FILE + ' не загрузилось, возвращаем аватар');
-                restoreAvatar();
-            });
-            
-            setTimeout(() => {
-                if (isPlayingGif && gifVideo && !gifVideo.ended) restoreAvatar();
-            }, 5000);
+            group.appendChild(grid);
+            contentDiv.appendChild(group);
         }
-    }
-    
-    function restoreAvatar() {
-        if (!isPlayingGif) return;
-        
-        isPlayingGif = false;
-        
-        if (gifVideo) {
-            if (gifVideo.restoreTimeout) clearTimeout(gifVideo.restoreTimeout);
-            gifVideo.remove();
-            gifVideo = null;
-        }
-        
-        if (originalContent) {
-            avatarContainer.innerHTML = originalContent;
-        } else {
-            avatarContainer.innerHTML = '<img src="' + AVATAR_IMG + '" alt="Volterith avatar" id="avatarImg" onerror="handleAvatarError()">';
-        }
-        
-        if (!avatarContainer.querySelector('.avatar-hint')) {
-            const hintDiv = document.createElement('div');
-            hintDiv.className = 'avatar-hint';
-            hintDiv.textContent = '✨ patpat ✨';
-            avatarContainer.appendChild(hintDiv);
-        } else {
-            const hint = avatarContainer.querySelector('.avatar-hint');
-            hint.style.display = '';
-        }
-        
-        const newImg = avatarContainer.querySelector('img');
-        if (newImg && newImg.id === 'avatarImg') {
-            newImg.onerror = handleAvatarError;
-            if (newImg.complete && newImg.naturalWidth === 0) handleAvatarError.call(newImg);
-        }
-    }
-    
-    if (avatarContainer) {
-        avatarContainer.addEventListener('click', (e) => {
-            if (e.target.classList && e.target.classList.contains('avatar-hint')) return;
-            playGifOnAvatar();
-        });
-    }
-    
-    function handleAvatarError() {
-        const avatarContainerLocal = document.getElementById('avatarContainer');
-        const img = this;
-        if (img && img.parentNode && !avatarContainerLocal.querySelector('.avatar-placeholder')) {
-            const placeholderDiv = document.createElement('div');
-            placeholderDiv.className = 'avatar-placeholder';
-            placeholderDiv.textContent = 'V';
-            img.remove();
-            const hint = avatarContainerLocal.querySelector('.avatar-hint');
-            avatarContainerLocal.innerHTML = '';
-            avatarContainerLocal.appendChild(placeholderDiv);
-            if (hint) avatarContainerLocal.appendChild(hint);
-        }
-    }
-    
-    const avatarImgElement = document.getElementById('avatarImg');
-    if (avatarImgElement) {
-        avatarImgElement.onerror = handleAvatarError;
-        if (avatarImgElement.complete && avatarImgElement.naturalWidth === 0) handleAvatarError.call(avatarImgElement);
-    }
-    
-    // ---------- ОБРАТНЫЙ ОТСЧЁТ ----------
+    });
+
+    // --- ЛОГИКА ТАЙМЕРА ---
     function updateCountdown() {
         const now = new Date();
-        let targetYear = now.getFullYear();
-        let targetDate = new Date(targetYear, 3, 21);
+        let target = new Date(now.getFullYear(), 3, 21); // 21 апреля
+        if (now > target) target = new Date(now.getFullYear() + 1, 3, 21);
+        const diff = target - now;
         
-        if (now > targetDate) {
-            targetYear++;
-            targetDate = new Date(targetYear, 3, 21);
-        }
-        
-        const diff = targetDate - now;
-        
-        if (diff <= 0) {
-            document.getElementById('days').innerText = '00';
-            document.getElementById('hours').innerText = '00';
-            document.getElementById('minutes').innerText = '00';
-            document.getElementById('seconds').innerText = '00';
-            const label = document.querySelector('.countdown-label');
-            if(label) label.innerHTML = '🎉 СЕГОДНЯ ДЕНЬ РОЖДЕНИЯ! 🎉';
-            return;
-        }
-        
-        const secondsTotal = Math.floor(diff / 1000);
-        const days = Math.floor(secondsTotal / 86400);
-        const hours = Math.floor((secondsTotal % 86400) / 3600);
-        const minutes = Math.floor((secondsTotal % 3600) / 60);
-        const seconds = secondsTotal % 60;
-        
-        document.getElementById('days').innerText = String(days).padStart(2, '0');
-        document.getElementById('hours').innerText = String(hours).padStart(2, '0');
-        document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
-        document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+        document.getElementById('days').innerText = String(Math.floor(diff / 86400000)).padStart(2, '0');
+        document.getElementById('hours').innerText = String(Math.floor((diff / 3600000) % 24)).padStart(2, '0');
+        document.getElementById('minutes').innerText = String(Math.floor((diff / 60000) % 60)).padStart(2, '0');
+        document.getElementById('seconds').innerText = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
     }
-    
-    updateCountdown();
     setInterval(updateCountdown, 1000);
-    
-    // ---------- НАБЛЮДЕНИЕ ЗА ИЗМЕНЕНИЯМИ ----------
-    const socialGroup = document.getElementById('socialLinksGroup');
-    const projectsGroup = document.getElementById('projectsLinksGroup');
-    const socialColumn = document.getElementById('socialColumn');
-    const projectsColumn = document.getElementById('projectsColumn');
-    
-    function updateColumnsHeight() {
-        const container = document.getElementById('linksDouble');
-        if (container) {
-            container.style.alignItems = 'stretch';
-            container.style.gap = '28px';
-        }
-        // Вызываем подстройку размера кнопок
-        adjustLinkSizes();
-    }
-    
-    const observer = new MutationObserver(function(mutations) {
-        updateColumnsHeight();
-    });
-    
-    if (socialGroup) observer.observe(socialGroup, { childList: true, subtree: false, attributes: false });
-    if (projectsGroup) observer.observe(projectsGroup, { childList: true, subtree: false, attributes: false });
-    if (socialColumn) observer.observe(socialColumn, { childList: true, subtree: true, attributes: false });
-    if (projectsColumn) observer.observe(projectsColumn, { childList: true, subtree: true, attributes: false });
-    
-    updateColumnsHeight();
-    window.addEventListener('resize', () => updateColumnsHeight());
-    
-    // Запускаем подстройку после полной загрузки
-    window.addEventListener('load', adjustLinkSizes);
+    updateCountdown();
+
+    // --- PATPAT АНИМАЦИЯ ---
+    const avatar = document.getElementById('avatarContainer');
+    let isPatting = false;
+    avatar.onclick = () => {
+        if (isPatting) return;
+        isPatting = true;
+        const img = document.getElementById('avatarImg');
+        const old = img.src;
+        img.src = 'patpat.gif';
+        setTimeout(() => { img.src = old; isPatting = false; }, 2000);
+    };
 </script>
+
 </body>
 </html>
